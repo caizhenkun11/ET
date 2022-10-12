@@ -1,5 +1,8 @@
 ﻿namespace ET.Server
 {
+    /// <summary>
+    /// 门会话密钥组件系统
+    /// </summary>
     [FriendOf(typeof(GateSessionKeyComponent))]
     public static class GateSessionKeyComponentSystem
     {
@@ -20,7 +23,12 @@
         {
             self.sessionKey.Remove(key);
         }
-
+        /// <summary>
+        /// 移除密钥超时
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         private static async ETTask TimeoutRemoveKey(this GateSessionKeyComponent self, long key)
         {
             await TimerComponent.Instance.WaitAsync(20000);

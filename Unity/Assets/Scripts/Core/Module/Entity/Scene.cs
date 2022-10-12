@@ -2,10 +2,13 @@
 
 namespace ET
 {
+    /// <summary>
+    /// 场景
+    /// </summary>
     [EnableMethod]
     [DebuggerDisplay("ViewName,nq")]
     [ChildOf]
-    public sealed class Scene: Entity
+    public sealed class Scene : Entity
     {
         public int Zone
         {
@@ -55,7 +58,7 @@ namespace ET
         public override void Dispose()
         {
             base.Dispose();
-            
+
             Log.Info($"scene dispose: {this.SceneType} {this.Name} {this.Id} {this.InstanceId} {this.Zone}");
         }
 
@@ -83,12 +86,12 @@ namespace ET
                 this.parent.Children.Add(this.Id, this);
             }
         }
-        
+
         protected override string ViewName
         {
             get
             {
-                return $"{this.GetType().Name} ({this.SceneType})";    
+                return $"{this.GetType().Name} ({this.SceneType})";
             }
         }
     }

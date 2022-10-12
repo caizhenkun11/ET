@@ -1,7 +1,21 @@
 namespace ET.Server
 {
+    /// <summary>
+    /// 机器人场景工厂
+    /// </summary>
     public static class RobotSceneFactory
     {
+        /// <summary>
+        /// 创建
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="id"></param>
+        /// <param name="instanceId"></param>
+        /// <param name="zone"></param>
+        /// <param name="name"></param>
+        /// <param name="sceneType"></param>
+        /// <param name="startSceneConfig"></param>
+        /// <returns></returns>
         public static async ETTask<Scene> Create(
             Entity parent,
             long id,

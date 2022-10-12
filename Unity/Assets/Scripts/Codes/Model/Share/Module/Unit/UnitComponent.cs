@@ -1,8 +1,10 @@
 ﻿namespace ET
 {
-	
-	[ComponentOf(typeof(Scene))]
-	public class UnitComponent: Entity, IAwake, IDestroy
-	{
-	}
+    /// <summary>
+    /// 单元组件
+    /// </summary>
+    [ComponentOf(typeof(Scene))]
+    public class UnitComponent : Entity, IAwake, IDestroy
+    {
+    }
 }

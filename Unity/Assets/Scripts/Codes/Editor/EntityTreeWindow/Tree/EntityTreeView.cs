@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace ET
 {
+    /// <summary>
+    /// 实体数视图
+    /// </summary>
     public class EntityTreeView: TreeView
     {
         private EntityTreeViewItem root;

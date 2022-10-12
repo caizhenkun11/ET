@@ -3,8 +3,16 @@ using System.Text;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// http助手
+    /// </summary>
     public static class HttpHelper
     {
+        /// <summary>
+        /// 响应
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="response"></param>
         public static void Response(HttpListenerContext context, object response)
         {
             byte[] bytes = JsonHelper.ToJson(response).ToUtf8();

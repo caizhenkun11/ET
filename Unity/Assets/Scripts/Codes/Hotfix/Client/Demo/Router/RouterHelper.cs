@@ -4,6 +4,9 @@ using System.Net.Sockets;
 
 namespace ET.Client
 {
+    /// <summary>
+    /// 路由器助手
+    /// </summary>
     public static class RouterHelper
     {
         // 注册router
@@ -15,25 +18,32 @@ namespace ET.Client
             {
                 throw new Exception($"get router fail: {clientScene.Id} {address}");
             }
-            
+
             Log.Info($"get router: {recvLocalConn} {routerAddress}");
 
             Session routerSession = clientScene.GetComponent<NetClientComponent>().Create(routerAddress, address, recvLocalConn);
             routerSession.AddComponent<PingComponent>();
             routerSession.AddComponent<RouterCheckComponent>();
-            
+
             return routerSession;
         }
-        
+        /// <summary>
+        /// 获取路由器地址
+        /// </summary>
+        /// <param name="clientScene"></param>
+        /// <param name="address"></param>
+        /// <param name="localConn"></param>
+        /// <param name="remoteConn"></param>
+        /// <returns></returns>
         public static async ETTask<(uint, IPEndPoint)> GetRouterAddress(Scene clientScene, IPEndPoint address, uint localConn, uint remoteConn)
         {
             Log.Info($"start get router address: {clientScene.Id} {address} {localConn} {remoteConn}");
             //return (RandomHelper.RandUInt32(), address);
             RouterAddressComponent routerAddressComponent = clientScene.GetComponent<RouterAddressComponent>();
             IPEndPoint routerInfo = routerAddressComponent.GetAddress();
-            
+
             uint recvLocalConn = await Connect(routerInfo, address, localConn, remoteConn);
-            
+
             Log.Info($"finish get router address: {clientScene.Id} {address} {localConn} {remoteConn} {recvLocalConn} {routerInfo}");
             return (recvLocalConn, routerInfo);
         }
@@ -42,14 +52,14 @@ namespace ET.Client
         private static async ETTask<uint> Connect(IPEndPoint routerAddress, IPEndPoint realAddress, uint localConn, uint remoteConn)
         {
             uint connectId = RandomGenerator.RandUInt32();
-            
+
             using Socket socket = new Socket(routerAddress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-            
+
             int count = 20;
             byte[] sendCache = new byte[512];
             byte[] recvCache = new byte[512];
 
-            uint synFlag = localConn == 0? KcpProtocalType.RouterSYN : KcpProtocalType.RouterReconnectSYN;
+            uint synFlag = localConn == 0 ? KcpProtocalType.RouterSYN : KcpProtocalType.RouterReconnectSYN;
             sendCache.WriteTo(0, synFlag);
             sendCache.WriteTo(1, localConn);
             sendCache.WriteTo(5, remoteConn);
@@ -58,7 +68,7 @@ namespace ET.Client
             Array.Copy(addressBytes, 0, sendCache, 13, addressBytes.Length);
 
             Log.Info($"router connect: {connectId} {localConn} {remoteConn} {routerAddress} {realAddress}");
-                
+
             EndPoint recvIPEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
             long lastSendTimer = 0;
@@ -77,9 +87,9 @@ namespace ET.Client
                     // 发送
                     socket.SendTo(sendCache, 0, addressBytes.Length + 13, SocketFlags.None, routerAddress);
                 }
-                    
+
                 await TimerComponent.Instance.WaitFrameAsync();
-                    
+
                 // 接收
                 if (socket.Available > 0)
                 {

@@ -9,8 +9,11 @@ namespace ET.Server
     [FriendOf(typeof(ActorMessageDispatcherComponent))]
     public static class ActorMessageDispatcherComponentHelper
     {
+        /// <summary>
+        /// 演员消息分发组件激活系统
+        /// </summary>
         [ObjectSystem]
-        public class ActorMessageDispatcherComponentAwakeSystem: AwakeSystem<ActorMessageDispatcherComponent>
+        public class ActorMessageDispatcherComponentAwakeSystem : AwakeSystem<ActorMessageDispatcherComponent>
         {
             protected override void Awake(ActorMessageDispatcherComponent self)
             {
@@ -18,18 +21,22 @@ namespace ET.Server
                 self.Awake();
             }
         }
-
+        /// <summary>
+        /// 演员消息分发组件加载系统
+        /// </summary>
         [ObjectSystem]
-        public class ActorMessageDispatcherComponentLoadSystem: LoadSystem<ActorMessageDispatcherComponent>
+        public class ActorMessageDispatcherComponentLoadSystem : LoadSystem<ActorMessageDispatcherComponent>
         {
             protected override void Load(ActorMessageDispatcherComponent self)
             {
                 self.Load();
             }
         }
-
+        /// <summary>
+        /// 演员消息分发组件销毁系统
+        /// </summary>
         [ObjectSystem]
-        public class ActorMessageDispatcherComponentDestroySystem: DestroySystem<ActorMessageDispatcherComponent>
+        public class ActorMessageDispatcherComponentDestroySystem : DestroySystem<ActorMessageDispatcherComponent>
         {
             protected override void Destroy(ActorMessageDispatcherComponent self)
             {
@@ -37,7 +44,7 @@ namespace ET.Server
                 ActorMessageDispatcherComponent.Instance = null;
             }
         }
-        
+
         public static void Awake(this ActorMessageDispatcherComponent self)
         {
             self.Load();
@@ -47,7 +54,7 @@ namespace ET.Server
         {
             self.ActorMessageHandlers.Clear();
 
-            var types = EventSystem.Instance.GetTypes(typeof (ActorMessageHandlerAttribute));
+            var types = EventSystem.Instance.GetTypes(typeof(ActorMessageHandlerAttribute));
             foreach (Type type in types)
             {
                 object obj = Activator.CreateInstance(type);
@@ -57,7 +64,7 @@ namespace ET.Server
                 {
                     throw new Exception($"message handler not inherit IMActorHandler abstract class: {obj.GetType().FullName}");
                 }
-                
+
                 object[] attrs = type.GetCustomAttributes(typeof(ActorMessageHandlerAttribute), false);
 
                 foreach (object attr in attrs)
@@ -82,7 +89,12 @@ namespace ET.Server
                 }
             }
         }
-        
+        /// <summary>
+        /// 注册处理
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="type"></param>
+        /// <param name="handler"></param>
         private static void RegisterHandler(this ActorMessageDispatcherComponent self, Type type, ActorMessageDispatcherInfo handler)
         {
             if (!self.ActorMessageHandlers.ContainsKey(type))
@@ -112,7 +124,7 @@ namespace ET.Server
                 {
                     continue;
                 }
-                await actorMessageDispatcherInfo.IMActorHandler.Handle(entity, message, reply);   
+                await actorMessageDispatcherInfo.IMActorHandler.Handle(entity, message, reply);
             }
         }
     }

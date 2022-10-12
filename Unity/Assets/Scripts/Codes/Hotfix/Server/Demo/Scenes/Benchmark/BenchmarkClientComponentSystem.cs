@@ -4,9 +4,12 @@ using ET.Client;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// 基准客户端组件系统
+    /// </summary>
     public static class BenchmarkClientComponentSystem
     {
-        public class AwakeSystem: AwakeSystem<BenchmarkClientComponent>
+        public class AwakeSystem : AwakeSystem<BenchmarkClientComponent>
         {
             protected override void Awake(BenchmarkClientComponent self)
             {
@@ -16,14 +19,18 @@ namespace ET.Server
                 }
             }
         }
-
+        /// <summary>
+        /// 开始
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         private static async ETTask Start(this BenchmarkClientComponent self)
         {
             await TimerComponent.Instance.WaitAsync(1000);
 
             Scene scene = await SceneFactory.CreateServerScene(self, IdGenerater.Instance.GenerateId(), IdGenerater.Instance.GenerateInstanceId(),
                 self.DomainZone(), "bechmark", SceneType.Benchmark);
-            
+
             NetClientComponent netClientComponent = scene.AddComponent<NetClientComponent, AddressFamily>(AddressFamily.InterNetwork);
 
             using Session session = netClientComponent.Create(StartSceneConfigCategory.Instance.BenchmarkServer.OuterIPPort);

@@ -1,7 +1,10 @@
 ﻿namespace ET.Server
 {
+    /// <summary>
+    /// 锁信息激活系统
+    /// </summary>
     [ObjectSystem]
-    public class LockInfoAwakeSystem: AwakeSystem<LockInfo, long, CoroutineLock>
+    public class LockInfoAwakeSystem : AwakeSystem<LockInfo, long, CoroutineLock>
     {
         protected override void Awake(LockInfo self, long lockInstanceId, CoroutineLock coroutineLock)
         {
@@ -9,9 +12,11 @@
             self.LockInstanceId = lockInstanceId;
         }
     }
-    
+    /// <summary>
+    /// 锁信息销毁系统
+    /// </summary>
     [ObjectSystem]
-    public class LockInfoDestroySystem: DestroySystem<LockInfo>
+    public class LockInfoDestroySystem : DestroySystem<LockInfo>
     {
         protected override void Destroy(LockInfo self)
         {
@@ -19,7 +24,9 @@
             self.LockInstanceId = 0;
         }
     }
-    
+    /// <summary>
+    /// 定位组件系统
+    /// </summary>
     [FriendOf(typeof(LocationComponent))]
     [FriendOf(typeof(LockInfo))]
     public static class LocationComponentSystem
@@ -41,7 +48,14 @@
                 Log.Info($"location remove key: {key}");
             }
         }
-
+        /// <summary>
+        /// 锁
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="key"></param>
+        /// <param name="instanceId"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
         public static async ETTask Lock(this LocationComponent self, long key, long instanceId, int time = 0)
         {
             CoroutineLock coroutineLock = await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Location, key);
@@ -63,7 +77,13 @@
                 self.UnLock(key, instanceId, instanceId);
             }
         }
-
+        /// <summary>
+        /// 解锁
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="key"></param>
+        /// <param name="oldInstanceId"></param>
+        /// <param name="newInstanceId"></param>
         public static void UnLock(this LocationComponent self, long key, long oldInstanceId, long newInstanceId)
         {
             if (!self.lockInfos.TryGetValue(key, out LockInfo lockInfo))

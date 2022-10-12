@@ -4,8 +4,11 @@ using CommandLine;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// 创建机器人控制台处理
+    /// </summary>
     [ConsoleHandler(ConsoleMode.CreateRobot)]
-    public class CreateRobotConsoleHandler: IConsoleHandler
+    public class CreateRobotConsoleHandler : IConsoleHandler
     {
         public async ETTask Run(ModeContex contex, string content)
         {
@@ -32,7 +35,7 @@ namespace ET.Server
                             }
                             thisProcessRobotScenes.Add(robotSceneConfig);
                         }
-                        
+
                         // 创建机器人
                         for (int i = 0; i < options.Num; ++i)
                         {

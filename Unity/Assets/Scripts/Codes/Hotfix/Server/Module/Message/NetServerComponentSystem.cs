@@ -2,11 +2,14 @@
 
 namespace ET.Server
 {
+    /// <summary>
+    /// 网络服务组件系统
+    /// </summary>
     [FriendOf(typeof(NetServerComponent))]
     public static class NetServerComponentSystem
     {
         [ObjectSystem]
-        public class AwakeSystem: AwakeSystem<NetServerComponent, IPEndPoint>
+        public class AwakeSystem : AwakeSystem<NetServerComponent, IPEndPoint>
         {
             protected override void Awake(NetServerComponent self, IPEndPoint address)
             {
@@ -18,7 +21,7 @@ namespace ET.Server
         }
 
         [ObjectSystem]
-        public class NetKcpComponentDestroySystem: DestroySystem<NetServerComponent>
+        public class NetKcpComponentDestroySystem : DestroySystem<NetServerComponent>
         {
             protected override void Destroy(NetServerComponent self)
             {
@@ -52,7 +55,7 @@ namespace ET.Server
                 session.AddComponent<SessionIdleCheckerComponent>();
             }
         }
-        
+
         private static void OnRead(this NetServerComponent self, long channelId, long actorId, object message)
         {
             Session session = self.GetChild<Session>(channelId);
@@ -61,10 +64,10 @@ namespace ET.Server
                 return;
             }
             session.LastRecvTime = TimeHelper.ClientNow();
-            
+
             OpcodeHelper.LogMsg(self.DomainZone(), message);
-			
-            EventSystem.Instance.Publish(Root.Instance.Scene, new NetServerComponentOnRead() {Session = session, Message = message});
+
+            EventSystem.Instance.Publish(Root.Instance.Scene, new NetServerComponentOnRead() { Session = session, Message = message });
         }
     }
 }

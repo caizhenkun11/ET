@@ -1,7 +1,16 @@
 namespace ET.Client
 {
-    public class AI_Attack: AAIHandler
+    /// <summary>
+    /// AI攻击
+    /// </summary>
+    public class AI_Attack : AAIHandler
     {
+        /// <summary>
+        /// 检查
+        /// </summary>
+        /// <param name="aiComponent"></param>
+        /// <param name="aiConfig"></param>
+        /// <returns></returns>
         public override int Check(AIComponent aiComponent, AIConfig aiConfig)
         {
             long sec = TimeHelper.ClientNow() / 1000 % 15;
@@ -11,7 +20,13 @@ namespace ET.Client
             }
             return 1;
         }
-
+        /// <summary>
+        /// 执行
+        /// </summary>
+        /// <param name="aiComponent"></param>
+        /// <param name="aiConfig"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
         {
             Scene clientScene = aiComponent.DomainScene();
@@ -24,7 +39,7 @@ namespace ET.Client
 
             // 停在当前位置
             clientScene.GetComponent<SessionComponent>().Session.Send(new C2M_Stop());
-            
+
             Log.Debug("开始攻击");
 
             for (int i = 0; i < 100000; ++i)

@@ -2,7 +2,13 @@
 
 namespace ET.Server
 {
-    public abstract class AMActorRpcHandler<E, Request, Response>: IMActorHandler where E : Entity where Request : class, IActorRequest where Response : class, IActorResponse
+    /// <summary>
+    /// 一个消息行动者rpc处理
+    /// </summary>
+    /// <typeparam name="E"></typeparam>
+    /// <typeparam name="Request"></typeparam>
+    /// <typeparam name="Response"></typeparam>
+    public abstract class AMActorRpcHandler<E, Request, Response> : IMActorHandler where E : Entity where Request : class, IActorRequest where Response : class, IActorResponse
     {
         protected abstract ETTask Run(E unit, Request request, Response response, Action reply);
 
@@ -13,14 +19,14 @@ namespace ET.Server
                 Request request = actorMessage as Request;
                 if (request == null)
                 {
-                    Log.Error($"消息类型转换错误: {actorMessage.GetType().FullName} to {typeof (Request).Name}");
+                    Log.Error($"消息类型转换错误: {actorMessage.GetType().FullName} to {typeof(Request).Name}");
                     return;
                 }
 
                 E ee = entity as E;
                 if (ee == null)
                 {
-                    Log.Error($"Actor类型转换错误: {entity.GetType().Name} to {typeof (E).Name} --{typeof (Request).Name}");
+                    Log.Error($"Actor类型转换错误: {entity.GetType().Name} to {typeof(E).Name} --{typeof(Request).Name}");
                     return;
                 }
 
@@ -53,17 +59,17 @@ namespace ET.Server
 
         public Type GetRequestType()
         {
-            if (typeof (IActorLocationRequest).IsAssignableFrom(typeof (Request)))
+            if (typeof(IActorLocationRequest).IsAssignableFrom(typeof(Request)))
             {
-                Log.Error($"message is IActorLocationMessage but handler is AMActorRpcHandler: {typeof (Request)}");
+                Log.Error($"message is IActorLocationMessage but handler is AMActorRpcHandler: {typeof(Request)}");
             }
 
-            return typeof (Request);
+            return typeof(Request);
         }
 
         public Type GetResponseType()
         {
-            return typeof (Response);
+            return typeof(Response);
         }
     }
 }

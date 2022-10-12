@@ -3,12 +3,15 @@ using Unity.Mathematics;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// AI实体系统
+    /// </summary>
     [FriendOf(typeof(AOIEntity))]
     [FriendOf(typeof(Cell))]
     public static class AOIEntitySystem
     {
         [ObjectSystem]
-        public class AwakeSystem: AwakeSystem<AOIEntity, int, float3>
+        public class AwakeSystem : AwakeSystem<AOIEntity, int, float3>
         {
             protected override void Awake(AOIEntity self, int distance, float3 pos)
             {
@@ -16,9 +19,11 @@ namespace ET.Server
                 self.DomainScene().GetComponent<AOIManagerComponent>().Add(self, pos.x, pos.z);
             }
         }
-
+        /// <summary>
+        /// 销毁系统
+        /// </summary>
         [ObjectSystem]
-        public class DestroySystem: DestroySystem<AOIEntity>
+        public class DestroySystem : DestroySystem<AOIEntity>
         {
             protected override void Destroy(AOIEntity self)
             {
@@ -33,18 +38,26 @@ namespace ET.Server
                 self.Cell = null;
             }
         }
-        
+
         // 获取在自己视野中的对象
         public static Dictionary<long, AOIEntity> GetSeeUnits(this AOIEntity self)
         {
             return self.SeeUnits;
         }
-
+        /// <summary>
+        /// 获取被看到的玩家
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         public static Dictionary<long, AOIEntity> GetBeSeePlayers(this AOIEntity self)
         {
             return self.BeSeePlayers;
         }
-
+        /// <summary>
+        /// 获取看到的玩家
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         public static Dictionary<long, AOIEntity> GetSeePlayers(this AOIEntity self)
         {
             return self.SeePlayers;
@@ -64,12 +77,20 @@ namespace ET.Server
                 self.EnterSight(kv.Value);
             }
         }
-
+        /// <summary>
+        /// cell中的unit退出self的视野 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="cell"></param>
         public static void UnSubEnter(this AOIEntity self, Cell cell)
         {
             cell.SubsEnterEntities.Remove(self.Id);
         }
-
+        /// <summary>
+        /// cell中的unit离开self的视野
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="cell"></param>
         public static void SubLeave(this AOIEntity self, Cell cell)
         {
             cell.SubsLeaveEntities.Add(self.Id, self);
@@ -99,7 +120,7 @@ namespace ET.Server
             {
                 return;
             }
-            
+
             if (!AOISeeCheckHelper.IsCanSee(self, enter))
             {
                 return;
@@ -113,7 +134,7 @@ namespace ET.Server
                     enter.BeSeeUnits.Add(self.Id, self);
                     self.SeePlayers.Add(enter.Id, enter);
                     enter.BeSeePlayers.Add(self.Id, self);
-                    
+
                 }
                 else
                 {

@@ -2,7 +2,12 @@ using System;
 
 namespace ET.Server
 {
-    public abstract class AMRpcHandler<Request, Response>: IMHandler where Request : class, IRequest where Response : class, IResponse
+    /// <summary>
+    /// 一个消息rpc处理
+    /// </summary>
+    /// <typeparam name="Request"></typeparam>
+    /// <typeparam name="Response"></typeparam>
+    public abstract class AMRpcHandler<Request, Response> : IMHandler where Request : class, IRequest where Response : class, IResponse
     {
         protected abstract ETTask Run(Session session, Request request, Response response, Action reply);
 
@@ -10,7 +15,12 @@ namespace ET.Server
         {
             HandleAsync(session, message).Coroutine();
         }
-
+        /// <summary>
+        /// 处理异步
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         private async ETTask HandleAsync(Session session, object message)
         {
             try
@@ -18,7 +28,7 @@ namespace ET.Server
                 Request request = message as Request;
                 if (request == null)
                 {
-                    throw new Exception($"消息类型转换错误: {message.GetType().Name} to {typeof (Request).Name}");
+                    throw new Exception($"消息类型转换错误: {message.GetType().Name} to {typeof(Request).Name}");
                 }
 
                 int rpcId = request.RpcId;
@@ -56,15 +66,21 @@ namespace ET.Server
                 throw new Exception($"解释消息失败: {message.GetType().FullName}", e);
             }
         }
-
+        /// <summary>
+        /// 获取请求消息类型
+        /// </summary>
+        /// <returns></returns>
         public Type GetMessageType()
         {
-            return typeof (Request);
+            return typeof(Request);
         }
-
+        /// <summary>
+        /// 获取响应类型
+        /// </summary>
+        /// <returns></returns>
         public Type GetResponseType()
         {
-            return typeof (Response);
+            return typeof(Response);
         }
     }
 }

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// http获取路由器处理
+    /// </summary>
     [HttpHandler(SceneType.RouterManager, "/get_router")]
     public class HttpGetRouterHandler : IHttpHandler
     {

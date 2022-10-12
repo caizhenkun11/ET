@@ -3,8 +3,22 @@ using System.Net.Sockets;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// 场景工厂
+    /// </summary>
     public static class SceneFactory
     {
+        /// <summary>
+        /// 创建服务端场景
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="id"></param>
+        /// <param name="instanceId"></param>
+        /// <param name="zone"></param>
+        /// <param name="name"></param>
+        /// <param name="sceneType"></param>
+        /// <param name="startSceneConfig"></param>
+        /// <returns></returns>
         public static async ETTask<Scene> CreateServerScene(Entity parent, long id, long instanceId, int zone, string name, SceneType sceneType, StartSceneConfig startSceneConfig = null)
         {
             await ETTask.CompletedTask;

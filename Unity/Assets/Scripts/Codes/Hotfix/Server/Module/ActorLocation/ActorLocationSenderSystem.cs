@@ -2,8 +2,11 @@ using System;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// 演员定位发送激活系统
+    /// </summary>
     [ObjectSystem]
-    public class ActorLocationSenderAwakeSystem: AwakeSystem<ActorLocationSender>
+    public class ActorLocationSenderAwakeSystem : AwakeSystem<ActorLocationSender>
     {
         protected override void Awake(ActorLocationSender self)
         {
@@ -13,8 +16,11 @@ namespace ET.Server
         }
     }
 
+    /// <summary>
+    /// 演员定位发送销毁系统
+    /// </summary>
     [ObjectSystem]
-    public class ActorLocationSenderDestroySystem: DestroySystem<ActorLocationSender>
+    public class ActorLocationSenderDestroySystem : DestroySystem<ActorLocationSender>
     {
         protected override void Destroy(ActorLocationSender self)
         {

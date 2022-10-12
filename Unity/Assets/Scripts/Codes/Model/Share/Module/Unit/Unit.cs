@@ -4,9 +4,12 @@ using Unity.Mathematics;
 
 namespace ET
 {
+    /// <summary>
+    /// 单元
+    /// </summary>
     [ChildOf(typeof(UnitComponent))]
     [DebuggerDisplay("ViewName,nq")]
-    public class Unit: Entity, IAwake<int>
+    public class Unit : Entity, IAwake<int>
     {
         public int ConfigId { get; set; } //配置表id
 
@@ -36,10 +39,10 @@ namespace ET
             get => math.mul(this.Rotation, math.forward());
             set => this.Rotation = quaternion.LookRotation(value, math.up());
         }
-        
+
         [BsonElement]
         private quaternion rotation;
-        
+
         [BsonIgnore]
         public quaternion Rotation
         {

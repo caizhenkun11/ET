@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// 机器人案例系统
+    /// </summary>
     public static class RobotCaseSystem
     {
         // 创建机器人，生命周期是RobotCase

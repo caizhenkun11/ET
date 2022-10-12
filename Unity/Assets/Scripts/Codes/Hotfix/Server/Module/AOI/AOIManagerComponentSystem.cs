@@ -2,11 +2,21 @@
 
 namespace ET.Server
 {
+    /// <summary>
+    /// Aoi管理组件系统
+    /// </summary>
     [FriendOf(typeof(AOIManagerComponent))]
     [FriendOf(typeof(AOIEntity))]
     [FriendOf(typeof(Cell))]
     public static class AOIManagerComponentSystem
     {
+        /// <summary>
+        /// 添加
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="aoiEntity"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public static void Add(this AOIManagerComponent self, AOIEntity aoiEntity, float x, float y)
         {
             int cellX = (int)(x * 1000) / AOIManagerComponent.CellSize;
@@ -82,7 +92,12 @@ namespace ET.Server
                 Log.Error($"aoiEntity has beSee units: {aoiEntity.BeSeeUnits.Count}");
             }
         }
-
+        /// <summary>
+        /// 获取单元
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="cellId"></param>
+        /// <returns></returns>
         private static Cell GetCell(this AOIManagerComponent self, long cellId)
         {
             Cell cell = self.GetChild<Cell>(cellId);

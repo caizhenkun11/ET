@@ -2,6 +2,9 @@
 
 namespace ET
 {
+    /// <summary>
+    /// 事件类型
+    /// </summary>
     namespace EventType
     {
         public struct ChangePosition

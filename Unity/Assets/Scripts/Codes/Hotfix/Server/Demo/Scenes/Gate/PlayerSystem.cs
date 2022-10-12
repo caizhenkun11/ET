@@ -1,5 +1,8 @@
 ﻿namespace ET.Server
 {
+    /// <summary>
+    /// 播放系统
+    /// </summary>
     [FriendOf(typeof(Player))]
     public static class PlayerSystem
     {

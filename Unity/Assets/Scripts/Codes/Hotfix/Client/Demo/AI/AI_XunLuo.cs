@@ -2,7 +2,10 @@ using Unity.Mathematics;
 
 namespace ET.Client
 {
-    public class AI_XunLuo: AAIHandler
+    /// <summary>
+    /// ai寻路
+    /// </summary>
+    public class AI_XunLuo : AAIHandler
     {
         public override int Check(AIComponent aiComponent, AIConfig aiConfig)
         {
@@ -23,7 +26,7 @@ namespace ET.Client
             {
                 return;
             }
-            
+
             Log.Debug("开始巡逻");
 
             while (true)

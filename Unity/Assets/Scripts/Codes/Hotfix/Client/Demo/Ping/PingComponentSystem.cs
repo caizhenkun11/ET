@@ -2,19 +2,30 @@ using System;
 
 namespace ET.Client
 {
+    /// <summary>
+    /// ping组件激活系统
+    /// </summary>
     [ObjectSystem]
-    public class PingComponentAwakeSystem: AwakeSystem<PingComponent>
+    public class PingComponentAwakeSystem : AwakeSystem<PingComponent>
     {
+        /// <summary>
+        /// 激活
+        /// </summary>
+        /// <param name="self"></param>
         protected override void Awake(PingComponent self)
         {
             PingAsync(self).Coroutine();
         }
-
+        /// <summary>
+        /// ping异步
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         private static async ETTask PingAsync(PingComponent self)
         {
             Session session = self.GetParent<Session>();
             long instanceId = self.InstanceId;
-            
+
             while (true)
             {
                 if (self.InstanceId != instanceId)
@@ -34,7 +45,7 @@ namespace ET.Client
 
                     long time2 = TimeHelper.ClientNow();
                     self.Ping = time2 - time1;
-                    
+
                     TimeInfo.Instance.ServerMinusClientTime = response.Time + (time2 - time1) / 2 - time2;
 
                     await TimerComponent.Instance.WaitAsync(2000);
@@ -52,9 +63,11 @@ namespace ET.Client
             }
         }
     }
-
+    /// <summary>
+    /// ping组件销毁系统
+    /// </summary>
     [ObjectSystem]
-    public class PingComponentDestroySystem: DestroySystem<PingComponent>
+    public class PingComponentDestroySystem : DestroySystem<PingComponent>
     {
         protected override void Destroy(PingComponent self)
         {

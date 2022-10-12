@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// 机器人管理组件系统
+    /// </summary>
     public static class RobotManagerComponentSystem
     {
         public static async ETTask<Scene> NewRobot(this RobotManagerComponent self, int zone)
@@ -22,15 +25,15 @@ namespace ET.Server
                 throw new Exception($"RobotSceneManagerComponent create robot fail, zone: {zone}", e);
             }
         }
-        
+
         public static void RemoveAll(this RobotManagerComponent self)
         {
-            foreach (Entity robot in self.Children.Values.ToArray())        
+            foreach (Entity robot in self.Children.Values.ToArray())
             {
                 robot.Dispose();
             }
         }
-        
+
         public static void Remove(this RobotManagerComponent self, long id)
         {
             self.GetChild<Scene>(id)?.Dispose();

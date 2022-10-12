@@ -6,8 +6,12 @@ using System.Text.RegularExpressions;
 
 namespace ET
 {
+    /// <summary>
+    /// 序列化类型扩展
+    /// </summary>
     public static class SerializationTypeExtension
     {
+        // 内编译类型2字符串
         private static readonly Dictionary<string, string> _builtInTypesToString = new Dictionary<string, string>()
         {
             { "System.Boolean", "bool" },
@@ -27,7 +31,7 @@ namespace ET
             { "System.String", "string" },
             { "System.Void", "void" }
         };
-
+        //内编译字符串2类型
         private static readonly Dictionary<string, string> _builtInTypeStrings = new Dictionary<string, string>()
         {
             { "bool", "System.Boolean" },
@@ -47,7 +51,11 @@ namespace ET
             { "string", "System.String" },
             { "void", "System.Void" }
         };
-
+        /// <summary>
+        /// 编译字符串
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static string ToCompilableString(this Type type)
         {
             if (SerializationTypeExtension._builtInTypesToString.ContainsKey(type.FullName))
@@ -55,8 +63,8 @@ namespace ET
             if (type.IsGenericType)
             {
                 string str1 = type.FullName.Split('`')[0];
-                string[] array = ((IEnumerable<Type>) type.GetGenericArguments())
-                        .Select<Type, string>((Func<Type, string>) (argType => argType.ToCompilableString())).ToArray<string>();
+                string[] array = ((IEnumerable<Type>)type.GetGenericArguments())
+                        .Select<Type, string>((Func<Type, string>)(argType => argType.ToCompilableString())).ToArray<string>();
                 string str2 = "<";
                 string str3 = string.Join(", ", array);
                 string str4 = ">";
@@ -69,7 +77,11 @@ namespace ET
                 return type.FullName.Replace('+', '.');
             return type.FullName;
         }
-
+        /// <summary>
+        /// 类型字符转类型
+        /// </summary>
+        /// <param name="typeString"></param>
+        /// <returns></returns>
         public static Type ToType(this string typeString)
         {
             string typeString1 = SerializationTypeExtension.generateTypeString(typeString);
@@ -83,20 +95,32 @@ namespace ET
                     return type2;
             }
 
-            return (Type) null;
+            return (Type)null;
         }
-
+        /// <summary>
+        /// 不带前缀类型字符串
+        /// </summary>
+        /// <param name="fullTypeName"></param>
+        /// <returns></returns>
         public static string ShortTypeName(this string fullTypeName)
         {
             string[] strArray = fullTypeName.Split('.');
             return strArray[strArray.Length - 1];
         }
-
+        /// <summary>
+        /// 移除类型的点
+        /// </summary>
+        /// <param name="fullTypeName"></param>
+        /// <returns></returns>
         public static string RemoveDots(this string fullTypeName)
         {
             return fullTypeName.Replace(".", string.Empty);
         }
-
+        /// <summary>
+        /// 生成类型字符串
+        /// </summary>
+        /// <param name="typeString"></param>
+        /// <returns></returns>
         private static string generateTypeString(string typeString)
         {
             if (SerializationTypeExtension._builtInTypeStrings.ContainsKey(typeString))
@@ -111,22 +135,30 @@ namespace ET
 
             return typeString;
         }
-
+        /// <summary>
+        /// 生成图像参数
+        /// </summary>
+        /// <param name="typeString"></param>
+        /// <returns></returns>
         private static string generateGenericArguments(string typeString)
         {
             string[] separator = new string[1] { ", " };
-            typeString = Regex.Replace(typeString, "<(?<arg>.*)>", (MatchEvaluator) (m =>
+            typeString = Regex.Replace(typeString, "<(?<arg>.*)>", (MatchEvaluator)(m =>
             {
                 string typeString1 = SerializationTypeExtension.generateTypeString(m.Groups["arg"].Value);
-                return "`" + (object) typeString1.Split(separator, StringSplitOptions.None).Length + "[" + typeString1 + "]";
+                return "`" + (object)typeString1.Split(separator, StringSplitOptions.None).Length + "[" + typeString1 + "]";
             }));
             return typeString;
         }
-
+        /// <summary>
+        /// 生成数组
+        /// </summary>
+        /// <param name="typeString"></param>
+        /// <returns></returns>
         private static string generateArray(string typeString)
         {
             typeString = Regex.Replace(typeString, "(?<type>[^\\[]*)(?<rank>\\[,*\\])",
-                (MatchEvaluator) (m => SerializationTypeExtension.generateTypeString(m.Groups["type"].Value) + m.Groups["rank"].Value));
+                (MatchEvaluator)(m => SerializationTypeExtension.generateTypeString(m.Groups["type"].Value) + m.Groups["rank"].Value));
             return typeString;
         }
     }

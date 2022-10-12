@@ -4,9 +4,15 @@ using System.Net;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// http组件系统
+    /// </summary>
     [FriendOf(typeof(HttpComponent))]
     public static class HttpComponentSystem
     {
+        /// <summary>
+        /// http组件激活系统
+        /// </summary>
         public class HttpComponentAwakeSystem : AwakeSystem<HttpComponent, string>
         {
             protected override void Awake(HttpComponent self, string address)
@@ -14,7 +20,7 @@ namespace ET.Server
                 try
                 {
                     self.Load();
-                
+
                     self.Listener = new HttpListener();
 
                     foreach (string s in address.Split(';'))
@@ -36,18 +42,22 @@ namespace ET.Server
                 }
             }
         }
-
+        /// <summary>
+        /// http组件加载系统
+        /// </summary>
         [ObjectSystem]
-        public class HttpComponentLoadSystem: LoadSystem<HttpComponent>
+        public class HttpComponentLoadSystem : LoadSystem<HttpComponent>
         {
             protected override void Load(HttpComponent self)
             {
                 self.Load();
             }
         }
-
+        /// <summary>
+        /// http组件销毁系统
+        /// </summary>
         [ObjectSystem]
-        public class HttpComponentDestroySystem: DestroySystem<HttpComponent>
+        public class HttpComponentDestroySystem : DestroySystem<HttpComponent>
         {
             protected override void Destroy(HttpComponent self)
             {
@@ -55,12 +65,15 @@ namespace ET.Server
                 self.Listener.Close();
             }
         }
-        
+        /// <summary>
+        /// 加载
+        /// </summary>
+        /// <param name="self"></param>
         public static void Load(this HttpComponent self)
         {
             self.dispatcher = new Dictionary<string, IHttpHandler>();
 
-            HashSet<Type> types = EventSystem.Instance.GetTypes(typeof (HttpHandlerAttribute));
+            HashSet<Type> types = EventSystem.Instance.GetTypes(typeof(HttpHandlerAttribute));
 
             SceneType sceneType = self.GetParent<Scene>().SceneType;
 
@@ -89,7 +102,11 @@ namespace ET.Server
                 self.dispatcher.Add(httpHandlerAttribute.Path, ihttpHandler);
             }
         }
-        
+        /// <summary>
+        /// 接受
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         public static async ETTask Accept(this HttpComponent self)
         {
             long instanceId = self.InstanceId;
@@ -109,7 +126,12 @@ namespace ET.Server
                 }
             }
         }
-
+        /// <summary>
+        /// 处理
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public static async ETTask Handle(this HttpComponent self, HttpListenerContext context)
         {
             try

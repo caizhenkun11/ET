@@ -3,11 +3,17 @@ using System.IO;
 
 namespace ET.Server
 {
+    /// <summary>
+    /// 演员消息发送组件系统
+    /// </summary>
     [FriendOf(typeof(ActorMessageSenderComponent))]
     public static class ActorMessageSenderComponentSystem
     {
+        /// <summary>
+        /// 演员消息发送检查者
+        /// </summary>
         [Invoke(TimerInvokeType.ActorMessageSenderChecker)]
-        public class ActorMessageSenderChecker: ATimer<ActorMessageSenderComponent>
+        public class ActorMessageSenderChecker : ATimer<ActorMessageSenderComponent>
         {
             protected override void Run(ActorMessageSenderComponent self)
             {
@@ -21,9 +27,11 @@ namespace ET.Server
                 }
             }
         }
-    
+        /// <summary>
+        /// 演员消息发送组件激活系统
+        /// </summary>
         [ObjectSystem]
-        public class ActorMessageSenderComponentAwakeSystem: AwakeSystem<ActorMessageSenderComponent>
+        public class ActorMessageSenderComponentAwakeSystem : AwakeSystem<ActorMessageSenderComponent>
         {
             protected override void Awake(ActorMessageSenderComponent self)
             {
@@ -32,9 +40,11 @@ namespace ET.Server
                 self.TimeoutCheckTimer = TimerComponent.Instance.NewRepeatedTimer(1000, TimerInvokeType.ActorMessageSenderChecker, self);
             }
         }
-
+        /// <summary>
+        /// 演员消息发送组件销毁系统
+        /// </summary>
         [ObjectSystem]
-        public class ActorMessageSenderComponentDestroySystem: DestroySystem<ActorMessageSenderComponent>
+        public class ActorMessageSenderComponentDestroySystem : DestroySystem<ActorMessageSenderComponent>
         {
             protected override void Destroy(ActorMessageSenderComponent self)
             {
@@ -61,7 +71,10 @@ namespace ET.Server
 
             self.Tcs.SetResult(response);
         }
-
+        /// <summary>
+        /// 检查
+        /// </summary>
+        /// <param name="self"></param>
         private static void Check(this ActorMessageSenderComponent self)
         {
             long timeNow = TimeHelper.ServerNow();
@@ -93,27 +106,36 @@ namespace ET.Server
 
             self.TimeoutActorMessageSenders.Clear();
         }
-
+        /// <summary>
+        /// 发送
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="actorId"></param>
+        /// <param name="message"></param>
         public static void Send(this ActorMessageSenderComponent self, long actorId, IMessage message)
         {
             if (actorId == 0)
             {
                 throw new Exception($"actor id is 0: {message}");
             }
-            
+
             ProcessActorId processActorId = new(actorId);
-            
+
             // 这里做了优化，如果发向同一个进程，则直接处理，不需要通过网络层
             if (processActorId.Process == Options.Instance.Process)
             {
                 NetInnerComponent.Instance.HandleMessage(actorId, message);
                 return;
             }
-            
+
             Session session = NetInnerComponent.Instance.Get(processActorId.Process);
             session.Send(processActorId.ActorId, message);
         }
-
+        /// <summary>
+        /// 获取rpcid
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         public static int GetRpcId(this ActorMessageSenderComponent self)
         {
             return ++self.RpcId;
@@ -127,7 +149,7 @@ namespace ET.Server
         )
         {
             request.RpcId = self.GetRpcId();
-            
+
             if (actorId == 0)
             {
                 throw new Exception($"actor id is 0: {request}");
@@ -135,7 +157,7 @@ namespace ET.Server
 
             return await self.Call(actorId, request.RpcId, request, needException);
         }
-        
+
         public static async ETTask<IActorResponse> Call(
                 this ActorMessageSenderComponent self,
                 long actorId,
@@ -150,9 +172,9 @@ namespace ET.Server
             }
 
             var tcs = ETTask<IActorResponse>.Create(true);
-            
+
             self.requestCallback.Add(rpcId, new ActorMessageSender(actorId, iActorRequest, tcs, needException));
-            
+
             self.Send(actorId, iActorRequest);
 
             long beginTime = TimeHelper.ServerFrameTime();
@@ -164,10 +186,15 @@ namespace ET.Server
             {
                 Log.Warning("actor rpc time > 200: {0} {1}", costTime, iActorRequest);
             }
-            
+
             return response;
         }
-
+        /// <summary>
+        /// 运行消息
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="actorId"></param>
+        /// <param name="response"></param>
         public static void RunMessage(this ActorMessageSenderComponent self, long actorId, IActorResponse response)
         {
             ActorMessageSender actorMessageSender;
@@ -177,7 +204,7 @@ namespace ET.Server
             }
 
             self.requestCallback.Remove(response.RpcId);
-            
+
             Run(actorMessageSender, response);
         }
     }

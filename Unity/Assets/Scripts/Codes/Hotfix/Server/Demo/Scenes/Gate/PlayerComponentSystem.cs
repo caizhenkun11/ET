@@ -2,6 +2,9 @@
 
 namespace ET.Server
 {
+    /// <summary>
+    /// 播放组件系统
+    /// </summary>
     [FriendOf(typeof(PlayerComponent))]
     public static class PlayerComponentSystem
     {
@@ -20,7 +23,11 @@ namespace ET.Server
         {
             self.idPlayers.Remove(id);
         }
-
+        /// <summary>
+        /// 获取所有
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         public static Player[] GetAll(this PlayerComponent self)
         {
             return self.idPlayers.Values.ToArray();
